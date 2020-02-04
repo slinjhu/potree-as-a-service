@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/libs/potree/potree.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.12/css/perfect-scrollbar.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.11.2/ol.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.4/themes/default/style.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.12/js/perfect-scrollbar.jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/85/three.min.js"></script>
+
+    <script src="/static/libs/other/BinaryHeap.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/16.3.5/Tween.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.12/proj4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.11.2/ol.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next/1.8.0/i18next.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.4/jstree.min.js"></script>
+    <script src="/static/libs/potree/potree.js"></script>
+
+
+    <title>{{ title }}</title>
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="potree_container" style="position: absolute; width: 100%; height: 100%;">
+    <div id="potree_render_area"></div>
+    <div id="potree_sidebar_container"> </div>
+</div>
+<script>
+    window.viewer = new Potree.Viewer(document.getElementById("potree_render_area"));
+    viewer.setEDLEnabled(true);
+    viewer.setFOV(60);
+    viewer.setPointBudget(100000000);
+    viewer.setEDLEnabled(true);
+    viewer.setBackground("gradient"); // ["skybox", "gradient", "black", "white"];
+    viewer.setDescription("{{ title }}");
+    viewer.loadSettingsFromURL();
+
+    viewer.loadGUI(() => {
+        viewer.setLanguage('en');
+        $("#menu_appearance").next().show();
+        $("#menu_tools").next().show();
+        $("#menu_scene").next().show();
+        viewer.toggleSidebar();
+    });
+
+    Potree.loadPointCloud("{{ point_cloud }}/cloud.js", "point cloud",
+        e => {
+            viewer.scene.addPointCloud(e.pointcloud);
+            viewer.fitToScreen();
+            let material = e.pointcloud.material;
+            material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
+            material.size = 0.7;
+        });
+
+
+    viewer.scene.annotations.add(new Potree.Annotation({
+        position: [0, 0, 0],
+        title: "O",
+        description: "Origin"
+    }));
+
+
+
+</script>
+
+
+</body>
+</html>
+

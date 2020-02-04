@@ -1,0 +1,7 @@
+.idea/
+*.pyc
+.vscode
+env/
+.DS_Store
+__pycache__
+src/static/temp
